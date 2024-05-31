@@ -1,0 +1,13 @@
+	        .update-form {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .update-form input[type="text"] {
+            width: 200px;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        .update-form input[type="submit"] {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
