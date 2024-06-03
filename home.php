@@ -13,7 +13,7 @@ include 'db.php';
     }
 }
 
-	$sql = "SELECT id, username, email,photo FROM users";
+	$sql = "SELECT id, username, email, photo FROM users";
 	$result = $conn->query($sql)
 
 	
@@ -46,7 +46,7 @@ include 'db.php';
                 echo "<td>" . $row["id"] . "</td>";
                 echo "<td>" . $row["username"] . "</td>";
                 echo "<td>" . $row["email"] . "</td>";
-                echo "<td><img src='" . $row["photo"] . "' alt='Profile Photo' width='100' height='100'></td>";
+                echo "<td><img src='" . $row["photo"] . "' alt='photo' width='100' height='100'></td>";
                 echo "<td><a href='update.php?id=" . $row["id"] . "'>Edit</a> | <a href='?action=delete&id=" . $row["id"] . "' onclick='return confirm(\"Are you sure?\")'>Delete</a></td>";
                 echo "</tr>";
             }

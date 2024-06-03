@@ -46,7 +46,7 @@
         <img src="<?php echo $profile_image; ?>" alt="Profile Picture">
         <p>Welcome to your profile!</p>
        <a href="upload_form.php">Upload New Profile Picture</a>
-       <a href="homepage.php">Go to homepage</a>
+       <a href="home.php">Go to homepage</a>
 
     </div>
 </body>

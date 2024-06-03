@@ -1,12 +1,6 @@
 <?php
-
-// Database connection
-try {
-    $pdo = new PDO("mysql:host=localhost;dbname=smmn", "root", "");
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
-}
+session_start();
+include 'db.php'; // Include database connection
 
 $target_dir = "uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
@@ -46,24 +40,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     } else {
         // Attempt to upload file
         if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-            // File uploaded successfully, now insert the file name into the database
-            $filename = basename($_FILES["fileToUpload"]["name"]);
-            $userId = 6; // Replace with the actual user ID for testing
+            // Prepare an SQL statement for inserting the file path
+            $stmt = $conn->prepare("INSERT INTO users (photo) VALUES (?)");
+            if (isset($_SESSION['username'])) {
+                $username = $_SESSION['username'];
 
-            try {
-                // Prepare SQL statement
-                $stmt = $pdo->prepare("INSERT INTO users VALUE photo = ?");
-                if ($stmt->execute([$filename, $userId])) {
-                    echo "Profile photo updated successfully.<br>";
-                    // Redirect to profile page
-                    header("Location: profile.php?img=" . urlencode($filename));
-                    exit();
-                } else {
-                    echo "Failed to update profile photo.<br>";
+                try {
+                    // Update the profile_photo column in the users table based on the username
+                    $stmt = $pdo->prepare("UPDATE users SET profile_photo = ? WHERE username = ?");
+                    if ($stmt->execute([$filename, $username])) {
+                        echo "Profile photo updated successfully.<br>";
+                        // Redirect to profile page
+                        header("Location: profile.php?img=" . urlencode($filename));
+                        exit();
+                    } else {
+                        echo "Failed to update profile photo.<br>";
+                    }
+                } catch (PDOException $e) {
+                    echo "Database error: " . $e->getMessage();
                 }
-            } catch (PDOException $e) {
-                echo "Database error: " . $e->getMessage();
-            }
         } else {
             echo "Sorry, there was an error uploading your file.<br>";
             // Print additional error information
@@ -75,4 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
         }
     }
 }
+}
+// Close the database connection
+$conn->close();
 ?>
