@@ -13,11 +13,8 @@ include 'db.php';
     }
 }
 
-	$user_sql = "SELECT id, username, email FROM users";
-	$result = $conn->query($user_sql)
-
-        $profile_sql = "SELECT id, photo FROM profile";
-        $result = $conn->query($profile_sql)
+	$sql = "SELECT id, username, email,photo FROM users";
+	$result = $conn->query($sql)
 
 	
 ?>
@@ -37,17 +34,19 @@ include 'db.php';
             <th>ID</th>
             <th>Name</th>
             <th>Email</th>
+            <th>Photo</th>
             <th>Action</th>
         </tr>
         <?php
         // Check if there are any rows returned
-        if ($user_result->num_rows > 0) {
+        if ($result->num_rows > 0) {
             // Output data of each row
-            while($row = $user_result->fetch_assoc()) {
+            while($row = $result->fetch_assoc()) {
                 echo "<tr>";
                 echo "<td>" . $row["id"] . "</td>";
                 echo "<td>" . $row["username"] . "</td>";
                 echo "<td>" . $row["email"] . "</td>";
+                echo "<td><img src='" . $row["photo"] . "' alt='Profile Photo' width='100' height='100'></td>";
                 echo "<td><a href='update.php?id=" . $row["id"] . "'>Edit</a> | <a href='?action=delete&id=" . $row["id"] . "' onclick='return confirm(\"Are you sure?\")'>Delete</a></td>";
                 echo "</tr>";
             }
@@ -56,27 +55,7 @@ include 'db.php';
         }
         ?>
     </table>
-    <table>
-	<tr>
-	   <th>ID</th>
-	   <th>photo</th>
-	</tr>
-	 <?php
-        // Check if there are any rows returned
-        if ($profile_result->num_rows > 0) {
-            // Output data of each row
-            while($row = $profile_result->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td>" . $row["id"] . "</td>";
-                echo "<td>" . $row["photo"] . "</td>";
-                echo "<td><img src='" . $row["photo"] . "' alt='Profile Photo' width='100' height='100'></td>";
- 		echo "</tr>"
-	}
-        } else {
-            echo "<tr><td colspan='2'>No users found</td></tr>";
-        }
-        ?>
-
+    
 
 </body>
 <button><a href="login.php">Logout</a></button>
