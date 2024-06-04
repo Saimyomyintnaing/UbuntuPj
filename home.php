@@ -74,6 +74,7 @@ $photo = null;
 
 </body>
 <button><a href="login.php">Logout</a></button>
+<button><a href="profile.php">Profile</a></button>
 </html>
 
 <?php

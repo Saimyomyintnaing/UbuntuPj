@@ -13,10 +13,12 @@ $user_id = $_SESSION['user_id'];
 $profile_image = "uploads/default.png";
 
 // Fetch user data from the database
-$sql = "SELECT photo FROM users WHERE id = $user_id";
+$sql = "SELECT username, email, photo FROM users WHERE id = $user_id";
 $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
+    $username = $row['username'];
+    $email = $row['email'];
     if (!empty($row['photo'])) {
         $profile_image = "uploads/" . htmlspecialchars($row['photo']);
     }
@@ -60,9 +62,10 @@ if ($result->num_rows > 0) {
 </head>
 <body>
     <div class="profile-container">
-        <h2>User Profile</h2>
+    <h2>User Profile</h2>
         <img src="<?php echo $profile_image; ?>" alt="Profile Picture">
-        <p>Welcome to your profile, <?php echo $_SESSION['username']; ?>!</p>
+        <p>Welcome to your profile, <?php echo htmlspecialchars($username); ?>!</p>
+        <p>Email: <?php echo htmlspecialchars($email); ?></p>
         <a href="upload_form.php">Upload New Profile Picture</a>
         <a href="home.php">Go to homepage</a>
     </div>
