@@ -1,6 +1,13 @@
 <?php
-session_start();
-include 'db.php'; // Include database connection
+session_start(); // Start the session
+
+// Database connection
+try {
+    $pdo = new PDO("mysql:host=localhost;dbname=smmn", "root", "");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
 
 $target_dir = "uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
@@ -40,14 +47,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     } else {
         // Attempt to upload file
         if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-            // Prepare an SQL statement for inserting the file path
-            $stmt = $conn->prepare("INSERT INTO users (photo) VALUES (?)");
+            // File uploaded successfully, now insert the file name into the database
+            $filename = basename($_FILES["fileToUpload"]["name"]);
+
+            // Check if the user is logged in by verifying the session variable
             if (isset($_SESSION['username'])) {
                 $username = $_SESSION['username'];
 
                 try {
                     // Update the profile_photo column in the users table based on the username
-                    $stmt = $pdo->prepare("UPDATE users SET profile_photo = ? WHERE username = ?");
+                    $stmt = $pdo->prepare("UPDATE users SET photo = ? WHERE username = ?");
                     if ($stmt->execute([$filename, $username])) {
                         echo "Profile photo updated successfully.<br>";
                         // Redirect to profile page
@@ -59,6 +68,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
                 } catch (PDOException $e) {
                     echo "Database error: " . $e->getMessage();
                 }
+            } else {
+                echo "No user is logged in.<br>";
+            }
         } else {
             echo "Sorry, there was an error uploading your file.<br>";
             // Print additional error information
@@ -70,7 +82,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
         }
     }
 }
-}
-// Close the database connection
-$conn->close();
 ?>

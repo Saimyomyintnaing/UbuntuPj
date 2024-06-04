@@ -1,5 +1,18 @@
 <?php 
+
+session_start(); // Continue the session
+
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php"); // Redirect to login page if not logged in
+    exit();
+}
+
 include 'db.php';
+
+$user_id = $_SESSION['user_id'];
+
+$id = null;
+$photo = null;
 
 	if(isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -46,7 +59,9 @@ include 'db.php';
                 echo "<td>" . $row["id"] . "</td>";
                 echo "<td>" . $row["username"] . "</td>";
                 echo "<td>" . $row["email"] . "</td>";
-                echo "<td><img src='" . $row["photo"] . "' alt='photo' width='100' height='100'></td>";
+                $imagePath = "uploads/" . $row["photo"];
+                
+                echo "<td><img src='" . $imagePath . "' alt='photo' width='100' height='100'></td>";
                 echo "<td><a href='update.php?id=" . $row["id"] . "'>Edit</a> | <a href='?action=delete&id=" . $row["id"] . "' onclick='return confirm(\"Are you sure?\")'>Delete</a></td>";
                 echo "</tr>";
             }
