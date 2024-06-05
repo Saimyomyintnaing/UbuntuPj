@@ -3,7 +3,7 @@ session_start(); // Start the session
 
 // Database connection
 try {
-    $pdo = new PDO("mysql:host=localhost;dbname=smmn", "root", "");
+    $pdo = new PDO("mysql:host=localhost;dbname=smmn", "smmn", "Smmn@123");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Database connection failed: " . $e->getMessage());
